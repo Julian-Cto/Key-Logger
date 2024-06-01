@@ -1,2 +1,2 @@
 # Key-Logger
-upload project into a USB (Windows Only)
+Key logger that emails log (Windows Only)
