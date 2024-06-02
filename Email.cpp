@@ -48,7 +48,7 @@ CURLcode Email::send(const std::string& url,
         part = curl_mime_addpart(mime);
         curl_mime_filedata(part, file.c_str());
         curl_mime_name(part, "anyname");/*<- you can change this (optional)*/
-        curl_mime_filename(part, "anyname");/* <- you can change this (optional)*/
+        curl_mime_filename(part, "anyname.txt");/* <- you can change this (optional)*/
 
         //Add custom headers
         struct curl_slist* headers = NULL;
