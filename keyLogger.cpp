@@ -17,7 +17,7 @@ void hideConsole();
 
 int main()
 {
-    void hideConsole();
+    hideConsole();
     
     enum Status { disable, enable };
     Status log = enable;
