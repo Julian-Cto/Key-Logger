@@ -19,7 +19,8 @@ Once the loop ends a marker for the end of input for that session is written to 
 The instructions to run this code are below:
 
 This program uses two external libraries windows.h and curl.h. Windows.h is already integrated into Visual Studios and I’ve attached the curl.h files in the repo and I integrated the files into the Email.h file. 
-**note this program runs best in x64 debug run in different modes use [this](https://www.youtube.com/watch?v=q_mXVZ6VJs4&t=790s) tutorial. (I used method #1 9:50)
+**note this program runs best in x64 debug** to run in different modes use [this](https://www.youtube.com/watch?v=q_mXVZ6VJs4&t=790s) tutorial. (I used method #1 9:50)
+
 We will be editing the following files: **Email.cpp** and **keyLogger.cpp**
 
 ### Email.cpp
