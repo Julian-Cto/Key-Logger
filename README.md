@@ -12,7 +12,7 @@ Now the loop is set to automatically start, with a for loop that runs through ev
 
 In the same line logKey(string) is called to write the translated key into the email and history text file.
 
-Once the loop ends a marker for the end of input for that session is written to both files. A second message box is displayed to indicate key logging is off. The next six lines of code prepare the subject in the email by calling GetCompterName to retrieve the name of the computer the program is running on. Finally, an email object is made to prepare the email and then sent with the text file attached.
+Once the loop ends a marker for the end of input for that session is written to both files. A second message box is displayed to indicate key logging is off. The next six lines of code prepare the subject in the email by calling GetCompterName to retrieve the name of the computer the program is running on. Finally, an email object is made to prepare the email and then send with the text file attached.
  
 ## How to run
 **note this tutorial is for Visual Studios, if you wish to use a different compiler you need to integrate the windows.h files**
